@@ -29,11 +29,11 @@
     <link rel="shortcut icon" href="/images/favicon.ico">
     
     
-    <title>标签 - 音乐 - 寂寞归云隐 ❤ 博客</title>
+    <title>在一组数中，找给定值target最近的k个数 - 寂寞归云隐 ❤ 博客</title>
     
-    <meta name="keywords" content="随笔，博客，技术，个人博客">
+    <meta name="keywords" content="在一组数中，找给定值target最近的k个数">
     
-    <meta name="description " content="个人博客，记录有趣新鲜的技术，分享一些随手笔记，帮助自己记忆和纠错，欢迎大家留言！">
+    <meta name="description " content="在一组数中，找给定值target最近的k个数">
     <!--加载静态资源-->
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
 <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
@@ -114,147 +114,88 @@
     <div class="row">
 
         <main class="col-md-8">
-    <div class="swiper-container index-focus">
-        <!-- S 焦点图 -->
-        <div id="index-focus" class="carousel slide carousel-focus" data-ride="carousel">
-            <ol class="carousel-indicators">
-                
-                
-                <li data-target="#index-focus" data-slide-to="0" class="active"></li>
-                
-                
-                <li data-target="#index-focus" data-slide-to="1" class=""></li>
-                
-                
-                <li data-target="#index-focus" data-slide-to="2" class=""></li>
-                
-            </ol>
-            <div class="carousel-inner" role="listbox">
-                
-                
-                <div class="item active">
-                    <a href="https://promotion.aliyun.com/ntms/act/enterprise-discount.html?userCode=jiyoiw7e" target="_blank">
-                        <div class="carousel-img" style="background-image:url('/img/2019/1280_720.jpg');"></div>
-                        <div class="carousel-caption hidden-xs">
-                            <h3>企业级云服务器5折特惠</h3>
-                        </div>
+    <div class="panel panel-default markdown-body">
+        <div class="panel-heading">
+            <div class="media media-number">
+                <div class="media-left">
+                    <a class="avatar" href="https://lzz1.top" target="_blank">
+                        <img width="48" src="/images/favicon.ico" alt="avatar">
                     </a>
                 </div>
-                
-                
-                <div class="item ">
-                    <a href="https://edu.aliyun.com/article/256?userCode=jiyoiw7e" target="_blank">
-                        <div class="carousel-img" style="background-image:url('/img/2019/1226433b5584402673.png');"></div>
-                        <div class="carousel-caption hidden-xs">
-                            <h3>阿里云大学开发者有奖知识挑战赛火热开启！等你来战！</h3>
-                        </div>
-                    </a>
+                <div class="media-body">
+                    <p><span class="label">作者</span>
+                        <a href="https://lzz1.top" target="_blank">lzz</a>
+                        <span title="最后编辑于&nbsp;2019-07-23">2019-07-23</span>
+                    </p>
+                    <p>另一个搬🧱的劳斯基😁️️</p>
                 </div>
-                
-                
-                <div class="item ">
-                    <a href="https://promotion.aliyun.com/ntms/yunparter/invite.html?userCode=jiyoiw7e" target="_blank">
-                        <div class="carousel-img" style="background-image:url('/images/15.jpg');"></div>
-                        <div class="carousel-caption hidden-xs">
-                            <h3>标题三</h3>
-                        </div>
-                    </a>
-                </div>
-                
             </div>
-            <a class="left carousel-control" href="#index-focus" role="button" data-slide="prev">
-                <span class="icon-prev fa fa-chevron-left" aria-hidden="true"></span>
-                <span class="sr-only">Previous</span>
-            </a>
-            <a class="right carousel-control" href="#index-focus" role="button" data-slide="next">
-                <span class="icon-next fa fa-chevron-right" aria-hidden="true"></span>
-                <span class="sr-only">Next</span>
-            </a>
-        </div>
-        <!-- E 焦点图 -->
-    </div>
-    <div class="panel panel-default">
-        <div class="panel-body p-0">
-            <div class="article-list">
-                
-                
-                
-<article class="article-item">
-    <div class="media">
-        <div class="media-body">
-            <div class="article-intro" style="height: 32px">
-                <a href="javascript:void (0)" target="_self"><i class="fa fa-tags"></i></a>
-                
-                <em>·</em>
-                <a class="tag tag-primary" href="https://lzz1.top/tags/music/" target="_self">音乐</a>
-                
-                <em>·</em>
-                <span itemprop="date"> 2019-03-30</span>
-                
-            </div>
-
-            <h3 class="article-title">
-                <a href="/tech-notes/wxmusic-1553936743.html" target="_self" title="微信小程序之音乐播放" style="font-weight:bold;">
-                    微信小程序之音乐播放
-                </a>
-            </h3>
-
-            <div class="hidden-xs">
-                微信小程序之音乐播放
+            <h2 class="post-title">在一组数中，找给定值Target最近的k个数</h2>
+            <div class="post-meta">
+                本文共计1305个字 |
+                您是第&nbsp;<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>位看到它们的小伙伴
             </div>
         </div>
-        <div class="media-left media-middle">
-            
+        <div class="panel-body">
+            <h4 id="已知一组升序数组，求与target最接近的k个数"><a href="#已知一组升序数组，求与target最接近的k个数" class="headerlink" title="已知一组升序数组，求与target最接近的k个数"></a>已知一组升序数组，求与target最接近的k个数</h4><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">suanfa</span><span class="params">($arr,$target,$k)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>($arr==<span class="number">0</span>||count($arr)==<span class="number">0</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> $arr;</span><br><span class="line">    &#125;</span><br><span class="line">    $length = count($arr);</span><br><span class="line">    <span class="keyword">if</span>($k&gt;=$length)&#123;</span><br><span class="line">        <span class="keyword">return</span> $arr;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//获取最近索引</span></span><br><span class="line">    $start = <span class="number">0</span>;</span><br><span class="line">    $end = $length - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> ($start + <span class="number">1</span> &lt; $end)&#123;</span><br><span class="line">        $mid = $start + ($end - $start) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> ($arr[$mid] &lt; $target) &#123;</span><br><span class="line">            $start = $mid;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            $end = $mid;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> ($target - $arr[$start] &lt;= $arr[$end] - $target) &#123;</span><br><span class="line">        $index = $start;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        $index = $end;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    $left = $index;</span><br><span class="line">    $right = $index+<span class="number">1</span>;</span><br><span class="line">    $result=[];</span><br><span class="line">    <span class="comment">//双指针，两个反向指针</span></span><br><span class="line">    <span class="keyword">for</span> ($i = <span class="number">0</span>; $i &lt; $k; $i++) &#123;</span><br><span class="line">        <span class="comment">//越界</span></span><br><span class="line">        <span class="keyword">if</span> ($left &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            $result[$i] = $arr[$right++];</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> ($right &gt;= $length) &#123;  <span class="comment">//越界</span></span><br><span class="line">            $result[$i] = $arr[$left--];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> ($target-$arr[$left] &lt;= $arr[$right]-$target) &#123;</span><br><span class="line">                $result[$i] = $arr[$left--];</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                $result[$i] = $arr[$right++];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> $result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$arr = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>];</span><br><span class="line">$target = <span class="number">4</span>;</span><br><span class="line">$k = <span class="number">3</span>;</span><br><span class="line">$result = suanfa($arr,$target,$k);</span><br><span class="line">print_r($result);</span><br></pre></td></tr></table></figure>
+
         </div>
-    </div>
+        <div class="post-tool social-share" data-disabled="google,twitter,facebook,douban,qzone,linkedin" data-mode="prepend">
 
-</article>
-
-
-                
-                
-<article class="article-item">
-    <div class="media">
-        <div class="media-body">
-            <div class="article-intro" style="height: 32px">
-                <a href="javascript:void (0)" target="_self"><i class="fa fa-tags"></i></a>
-                
-                <em>·</em>
-                <a class="tag tag-primary" href="https://lzz1.top/tags/music/" target="_self">音乐</a>
-                
-                <em>·</em>
-                <span itemprop="date"> 2019-03-20</span>
-                
-            </div>
-
-            <h3 class="article-title">
-                <a href="/tech-notes/music-1553069533.html" target="_self" title="纯音乐" style="font-weight:bold;">
-                    纯音乐
-                </a>
-            </h3>
-
-            <div class="hidden-xs">
-                纯音乐
-            </div>
-        </div>
-        <div class="media-left media-middle">
-            
-        </div>
-    </div>
-
-</article>
-
-
-                
-                
-            </div>
         </div>
         <div class="panel-footer">
             
+            <div class="post-tags">标签：
+                
+                <a href="/tags/php/">Php</a>
+                
+            </div>
+            
+
+            
+            <p style="text-align: center">本文代表个人观点，内容仅供参考。若有不恰当之处，望不吝赐教！</p>
+            
+
+            
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-2800751316188740" data-ad-slot="" data-ad-format="auto" data-full-width-responsive="true"></ins>
+
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+
+            
+<section id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <style>
+        .markdown-body * {
+            -webkit-box-sizing: content-box;
+            box-sizing: content-box;
+        }
+    </style>
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var gitalk = new Gitalk({
+            clientID: '3371b856dd39533341dd',
+            clientSecret: 'd11de7ffd8f324d3996cdb17766f51f5212bc13f',
+            repo: 'lnew.github.io',
+            owner: 'lnew',
+            admin: ['lnew'],
+            id: '在一组数中，找给定值Target最近的k个数',      // Ensure uniqueness and length less than 50
+            distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
         </div>
     </div>
 </main>
-
+<script src="/js/busuanzi.pure.mini.js"></script>
+<script src="/js/social-share.min.js"></script>
 
 
         <aside class="col-xs-12 col-sm-4">
