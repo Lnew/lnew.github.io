@@ -1,0 +1,11 @@
+User-agent:  Baiduspider
+Allow: /
+Disallow:/music.html
+User-agent:  Sogouspider
+Allow: /
+Disallow:/music.html
+User-Agent:  Googlebot
+Allow:  /
+Disallow:/music.html
+User-Agent:  *
+Disallow:  /
