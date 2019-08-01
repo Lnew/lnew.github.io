@@ -181,7 +181,7 @@
 <blockquote>
 <p>成功后会在 /www/server/php/71/lib/php/extensions/no-debug-non-zts-20160303 这个目录生成ssh2.so文件</p>
 <ul>
-<li>把文件假如配置，重启</li>
+<li>把文件加入配置，重启</li>
 </ul>
 </blockquote>
 <h4 id="注意：网上找了好几个都直说在配置文件php-ini加入extension-ssh2-so，这里有点小问题-也可能我的版本问题，不成功"><a href="#注意：网上找了好几个都直说在配置文件php-ini加入extension-ssh2-so，这里有点小问题-也可能我的版本问题，不成功" class="headerlink" title="注意：网上找了好几个都直说在配置文件php.ini加入extension=ssh2.so，这里有点小问题(也可能我的版本问题，不成功)"></a>注意：网上找了好几个都直说在配置文件php.ini加入extension=ssh2.so，这里有点小问题(也可能我的版本问题，不成功)</h4><figure class="highlight makefile"><table><tr><td class="code"><pre><span class="line">对比了上面的扩展，我加了下面2行，重启后成功</span><br><span class="line">[ssh2]</span><br><span class="line">extension=ssh2.so</span><br></pre></td></tr></table></figure>
