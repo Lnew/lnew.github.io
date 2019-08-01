@@ -29,11 +29,11 @@
     <link rel="shortcut icon" href="/images/favicon.ico">
     
     
-    <title>php获取目录下所有文件 - 寂寞归云隐 ❤ 博客</title>
+    <title>centos7安装php扩展ssh2 - 寂寞归云隐 ❤ 博客</title>
     
-    <meta name="keywords" content="PHP获取目录下所有文件">
+    <meta name="keywords" content="随笔，博客，技术，个人博客">
     
-    <meta name="description " content="PHP获取目录下所有文件">
+    <meta name="description " content="个人博客，记录有趣新鲜的技术，分享一些随手笔记，帮助自己记忆和纠错，欢迎大家留言！">
     <!--加载静态资源-->
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
 <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
@@ -140,20 +140,51 @@
                 <div class="media-body">
                     <p><span class="label">作者</span>
                         <a href="https://lzz1.top" target="_blank">lzz</a>
-                        <span title="最后编辑于&nbsp;2019-04-19">2019-04-19</span>
+                        <span title="最后编辑于&nbsp;2019-08-01">2019-08-01</span>
                     </p>
                     <p>另一个搬🧱的劳斯基😁️️</p>
                 </div>
             </div>
-            <h2 class="post-title">PHP获取目录下所有文件</h2>
+            <h2 class="post-title">CentOS7安装php扩展ssh2</h2>
             <div class="post-meta">
-                本文共计362个字 |
+                本文共计712个字 |
                 您是第&nbsp;<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>位看到它们的小伙伴
             </div>
         </div>
         <div class="panel-body">
-            <figure class="highlight perl"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 目录地址</span></span><br><span class="line">$dir = <span class="string">""</span>;</span><br><span class="line">$fname = [];</span><br><span class="line">$dir = iconv(<span class="string">"utf-8"</span>, <span class="string">"gb2312"</span>, $dir);</span><br><span class="line"> <span class="keyword">if</span> ($headle = <span class="keyword">opendir</span>($dir)) &#123;</span><br><span class="line">        <span class="keyword">while</span> ($file = <span class="keyword">readdir</span>($headle)) &#123;</span><br><span class="line">            $file = iconv(<span class="string">"gb2312"</span>, <span class="string">"utf-8"</span>, $file);</span><br><span class="line">            $fname[] = $file;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"> <span class="comment"># 读取文件内容</span></span><br><span class="line"> <span class="keyword">foreach</span>($fname as $fn)&#123;</span><br><span class="line">    <span class="comment"># file 把文件内容读取到数组</span></span><br><span class="line">    $data = file($dir.$fn);</span><br><span class="line">    // to <span class="keyword">do</span>  </span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-
+            <h4 id="已宝塔面板为例"><a href="#已宝塔面板为例" class="headerlink" title="已宝塔面板为例"></a>已宝塔面板为例</h4><blockquote>
+<p>下载必要的压缩包</p>
+<ul>
+<li>wget <a href="https://www.libssh2.org/download/libssh2-1.8.0.tar.gz">https://www.libssh2.org/download/libssh2-1.8.0.tar.gz</a></li>
+<li>wget <a href="https://pecl.php.net/get/ssh2-1.1.2.tgz">https://pecl.php.net/get/ssh2-1.1.2.tgz</a></li>
+</ul>
+</blockquote>
+<blockquote>
+<p>先解压编译安装libssh2</p>
+<ul>
+<li>tar -zxvf libssh2-1.8.0.tar.gz</li>
+<li>cd libssh2-1.8.0</li>
+<li>./configure –prefix=/usr/local/libssh2</li>
+<li>make &amp;&amp; make install</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>然后解压编译安装ssh2</p>
+<ul>
+<li>tar -zxvf ssh2-1.1.2.tgz</li>
+<li>cd ssh2-1.1.2</li>
+<li>/www/server/php/71/bin/phpize 这里执行对应的</li>
+<li>./configure –prefix=/usr/local/ssh2 –with-ssh2=/usr/local/libssh2 –with-php-config=/www/server/php/71/bin/php-config</li>
+<li>make &amp;&amp; make install</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>成功后会在 /www/server/php/71/lib/php/extensions/no-debug-non-zts-20160303 这个目录生成ssh2.so文件</p>
+<ul>
+<li>把文件假如配置，重启</li>
+</ul>
+</blockquote>
+<h4 id="注意：网上找了好几个都直说在配置文件php-ini加入extension-ssh2-so，这里有点小问题-也可能我的版本问题，不成功"><a href="#注意：网上找了好几个都直说在配置文件php-ini加入extension-ssh2-so，这里有点小问题-也可能我的版本问题，不成功" class="headerlink" title="注意：网上找了好几个都直说在配置文件php.ini加入extension=ssh2.so，这里有点小问题(也可能我的版本问题，不成功)"></a>注意：网上找了好几个都直说在配置文件php.ini加入extension=ssh2.so，这里有点小问题(也可能我的版本问题，不成功)</h4><figure class="highlight makefile"><table><tr><td class="code"><pre><span class="line">对比了上面的扩展，我加了下面2行，重启后成功</span><br><span class="line">[ssh2]</span><br><span class="line">extension=ssh2.so</span><br></pre></td></tr></table></figure>
         </div>
         <div class="post-tool social-share" data-disabled="google,twitter,facebook,douban,qzone,linkedin" data-mode="prepend">
 
@@ -161,8 +192,6 @@
         <div class="panel-footer">
             
             <div class="post-tags">标签：
-                
-                <a href="/tags/php/">Php</a>
                 
             </div>
             
@@ -197,7 +226,7 @@
             repo: 'lnew.github.io',
             owner: 'lnew',
             admin: ['lnew'],
-            id: 'PHP获取目录下所有文件',      // Ensure uniqueness and length less than 50
+            id: 'CentOS7安装php扩展ssh2',      // Ensure uniqueness and length less than 50
             distractionFreeMode: false  // Facebook-like distraction free mode
         })
 
