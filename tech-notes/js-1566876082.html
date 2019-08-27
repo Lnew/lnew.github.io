@@ -29,11 +29,11 @@
     <link rel="shortcut icon" href="/images/favicon.ico">
     
     
-    <title>分类 - 采集 - 寂寞归云隐 ❤ 博客</title>
+    <title>js格式化时间 - 寂寞归云隐 ❤ 博客</title>
     
-    <meta name="keywords" content="随笔，博客，技术，个人博客">
+    <meta name="keywords" content="js获取今日，昨日，最近7天时间">
     
-    <meta name="description " content="个人博客，记录有趣新鲜的技术，分享一些随手笔记，帮助自己记忆和纠错，欢迎大家留言！">
+    <meta name="description " content="js获取今日，昨日，最近7天时间">
     <!--加载静态资源-->
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
 <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
@@ -129,94 +129,88 @@
     <div class="row">
 
         <main class="col-md-8">
-    <div class="panel panel-default">
-        <div class="panel-body p-0">
-            <div class="article-list">
-                
-                
-                
-<article class="article-item">
-    <div class="media">
-        <div class="media-body">
-            <div class="article-intro" style="height: 32px">
-                <a href="javascript:void (0)" target="_self"><i class="fa fa-tags"></i></a>
-                
-                <em>·</em>
-                <a class="tag tag-primary" href="https://lzz1.top/tags/python/" target="_self">Python</a>
-                
-                <em>·</em>
-                <a class="tag tag-primary" href="https://lzz1.top/tags/caiji/" target="_self">采集</a>
-                
-                <em>·</em>
-                <span itemprop="date"> 2019-03-19</span>
-                
+    <div class="panel panel-default markdown-body">
+        <div class="panel-heading">
+            <div class="media media-number">
+                <div class="media-left">
+                    <a class="avatar" href="https://lzz1.top" target="_blank">
+                        <img width="48" src="/images/favicon.ico" alt="avatar">
+                    </a>
+                </div>
+                <div class="media-body">
+                    <p><span class="label">作者</span>
+                        <a href="https://lzz1.top" target="_blank">lzz</a>
+                        <span title="最后编辑于&nbsp;2019-08-27">2019-08-27</span>
+                    </p>
+                    <p>另一个搬🧱的劳斯基😁️️</p>
+                </div>
             </div>
-
-            <h3 class="article-title">
-                <a href="/caiji/caiji-1552983122.html" target="_self" title="采集股票数据第二篇" style="font-weight:bold;">
-                    采集股票数据第二篇
-                </a>
-            </h3>
-
-            <div class="hidden-xs">
-                采集股票数据
+            <h2 class="post-title">Js格式化时间</h2>
+            <div class="post-meta">
+                本文共计943个字 |
+                您是第&nbsp;<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>位看到它们的小伙伴
             </div>
         </div>
-        <div class="media-left media-middle">
-            
+        <div class="panel-body">
+            <h4 id="先自定义格式化函数"><a href="#先自定义格式化函数" class="headerlink" title="先自定义格式化函数"></a>先自定义格式化函数</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Date</span>.prototype.Format = <span class="function"><span class="keyword">function</span> (<span class="params">fmt</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> o = &#123;</span><br><span class="line">            <span class="string">"M+"</span>: <span class="keyword">this</span>.getMonth() + <span class="number">1</span>, <span class="comment">//月份</span></span><br><span class="line">            <span class="string">"d+"</span>: <span class="keyword">this</span>.getDate(), <span class="comment">//日</span></span><br><span class="line">            <span class="string">"H+"</span>: <span class="keyword">this</span>.getHours(), <span class="comment">//小时</span></span><br><span class="line">            <span class="string">"m+"</span>: <span class="keyword">this</span>.getMinutes(), <span class="comment">//分</span></span><br><span class="line">            <span class="string">"s+"</span>: <span class="keyword">this</span>.getSeconds(), <span class="comment">//秒</span></span><br><span class="line">            <span class="string">"q+"</span>: <span class="built_in">Math</span>.floor((<span class="keyword">this</span>.getMonth() + <span class="number">3</span>) / <span class="number">3</span>), <span class="comment">//季度</span></span><br><span class="line">            <span class="string">"S"</span>: <span class="keyword">this</span>.getMilliseconds() <span class="comment">//毫秒</span></span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="keyword">if</span> (<span class="regexp">/(y+)/</span>.test(fmt)) fmt = fmt.replace(<span class="built_in">RegExp</span>.$<span class="number">1</span>, (<span class="keyword">this</span>.getFullYear() + <span class="string">""</span>).substr(<span class="number">4</span> - <span class="built_in">RegExp</span>.$<span class="number">1.</span>length));</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">var</span> k <span class="keyword">in</span> o)</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">new</span> <span class="built_in">RegExp</span>(<span class="string">"("</span> + k + <span class="string">")"</span>).test(fmt)) fmt = fmt.replace(<span class="built_in">RegExp</span>.$<span class="number">1</span>, (<span class="built_in">RegExp</span>.$<span class="number">1.</span>length == <span class="number">1</span>) ? (o[k]) : ((<span class="string">"00"</span> + o[k]).substr((<span class="string">""</span> + o[k]).length)));</span><br><span class="line">        <span class="keyword">return</span> fmt;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">今天: </span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Date</span>().Format(<span class="string">'yyyy-MM-dd'</span>)</span><br><span class="line"></span><br><span class="line">昨天：</span><br><span class="line"><span class="keyword">var</span> day = <span class="keyword">new</span> <span class="built_in">Date</span>()</span><br><span class="line">day.setDate(day.getDate()<span class="number">-1</span>);</span><br><span class="line"><span class="built_in">console</span>.log(day.Format(<span class="string">'yyyy-MM-dd'</span>))</span><br><span class="line"></span><br><span class="line">最近<span class="number">7</span>天时间：</span><br><span class="line"><span class="keyword">var</span> day = <span class="keyword">new</span> <span class="built_in">Date</span>()</span><br><span class="line">day.setDate(day.getDate()<span class="number">-7</span>);</span><br><span class="line"><span class="built_in">console</span>.log(day.Format(<span class="string">'yyyy-MM-dd'</span>))</span><br></pre></td></tr></table></figure>
+
         </div>
-    </div>
+        <div class="post-tool social-share" data-disabled="google,twitter,facebook,douban,qzone,linkedin" data-mode="prepend">
 
-</article>
-
-
-                
-                
-<article class="article-item">
-    <div class="media">
-        <div class="media-body">
-            <div class="article-intro" style="height: 32px">
-                <a href="javascript:void (0)" target="_self"><i class="fa fa-tags"></i></a>
-                
-                <em>·</em>
-                <a class="tag tag-primary" href="https://lzz1.top/tags/python/" target="_self">Python</a>
-                
-                <em>·</em>
-                <a class="tag tag-primary" href="https://lzz1.top/tags/caiji/" target="_self">采集</a>
-                
-                <em>·</em>
-                <span itemprop="date"> 2019-03-13</span>
-                
-            </div>
-
-            <h3 class="article-title">
-                <a href="/caiji/caiji-1552468822.html" target="_self" title="采集股票数据第一篇" style="font-weight:bold;">
-                    采集股票数据第一篇
-                </a>
-            </h3>
-
-            <div class="hidden-xs">
-                采集股票数据
-            </div>
-        </div>
-        <div class="media-left media-middle">
-            
-        </div>
-    </div>
-
-</article>
-
-
-                
-                
-            </div>
         </div>
         <div class="panel-footer">
             
+            <div class="post-tags">标签：
+                
+                <a href="/tags/javascript/">JavaScript</a>
+                
+            </div>
+            
+
+            
+            <p style="text-align: center">本文代表个人观点，内容仅供参考。若有不恰当之处，望不吝赐教！</p>
+            
+
+            
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-2800751316188740" data-ad-slot="" data-ad-format="auto" data-full-width-responsive="true"></ins>
+
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+
+            
+<section id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <style>
+        .markdown-body * {
+            -webkit-box-sizing: content-box;
+            box-sizing: content-box;
+        }
+    </style>
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var gitalk = new Gitalk({
+            clientID: '3371b856dd39533341dd',
+            clientSecret: 'd11de7ffd8f324d3996cdb17766f51f5212bc13f',
+            repo: 'lnew.github.io',
+            owner: 'lnew',
+            admin: ['lnew'],
+            id: 'Js格式化时间',      // Ensure uniqueness and length less than 50
+            distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
         </div>
     </div>
 </main>
-
+<script src="/js/busuanzi.pure.mini.js"></script>
+<script src="/js/social-share.min.js"></script>
 
 
         <aside class="col-xs-12 col-sm-4">
