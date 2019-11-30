@@ -29,11 +29,11 @@
     <link rel="shortcut icon" href="/images/favicon.ico">
     
     
-    <title>数据表2条数据相邻的时间差 - 寂寞归云隐 ❤ 博客</title>
+    <title>php处理视频工具ffmpeg - 寂寞归云隐 ❤ 博客</title>
     
-    <meta name="keywords" content="mysql">
+    <meta name="keywords" content="php-ffmpeg">
     
-    <meta name="description " content="主要用来计算用户访问时长">
+    <meta name="description " content="php处理视频工具ffmpeg">
     <!--加载静态资源-->
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
 <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
@@ -140,21 +140,38 @@
                 <div class="media-body">
                     <p><span class="label">作者</span>
                         <a href="https://lzz1.top" target="_blank">lzz</a>
-                        <span title="最后编辑于&nbsp;2019-02-22">2019-02-22</span>
+                        <span title="最后编辑于&nbsp;2019-11-30">2019-11-30</span>
                     </p>
                     <p>另一个搬🧱的劳斯基😁️️</p>
                 </div>
             </div>
-            <h2 class="post-title">数据表2条数据相邻的时间差</h2>
+            <h2 class="post-title">Php处理视频工具ffmpeg</h2>
             <div class="post-meta">
-                本文共计870个字 |
+                本文共计476个字 |
                 您是第&nbsp;<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>位看到它们的小伙伴
             </div>
         </div>
         <div class="panel-body">
-            <figure class="highlight n1ql"><table><tr><td class="code"><pre><span class="line">function run()&#123;</span><br><span class="line">    $start = date('Ymd');</span><br><span class="line">    $sql = "<span class="keyword">SELECT</span> A.f_id,A.f_mid,A.f_ctime,B.f_ctime,(B.f_ctime-A.f_ctime) diff <span class="keyword">FROM</span></span><br><span class="line">(<span class="keyword">SELECT</span> f_id,f_mid,f_ctime,(@i := @i + <span class="number">1</span>) <span class="keyword">as</span> ord_num <span class="keyword">from</span> member_fangwen_log a,(<span class="keyword">select</span> @i := <span class="number">1</span>) d <span class="keyword">WHERE</span> f_date=&#123;$<span class="keyword">start</span>&#125; <span class="keyword">AND</span> f_shichang&lt;<span class="number">0</span> <span class="keyword">order</span> <span class="keyword">by</span> f_mid <span class="keyword">limit</span> <span class="number">5000</span>) A</span><br><span class="line"><span class="keyword">LEFT</span> <span class="keyword">JOIN</span></span><br><span class="line">(<span class="keyword">SELECT</span> f_id,f_mid,f_ctime,(@j := @j + <span class="number">1</span>) <span class="keyword">as</span> ord_num <span class="keyword">from</span> member_fangwen_log a,(<span class="keyword">select</span> @j := <span class="number">0</span>) c <span class="keyword">WHERE</span> f_date=&#123;$<span class="keyword">start</span>&#125; <span class="keyword">AND</span> f_shichang&lt;<span class="number">0</span> <span class="keyword">order</span> <span class="keyword">by</span> f_mid <span class="keyword">limit</span> <span class="number">5000</span>) B</span><br><span class="line"><span class="keyword">on</span> A.ord_num=B.ord_num <span class="keyword">AND</span> A.f_mid=B.f_mid<span class="string">";</span></span><br><span class="line"><span class="string">    $rows = db_arr($sql);</span></span><br><span class="line"><span class="string">    foreach ($rows as $val)&#123;</span></span><br><span class="line"><span class="string">        !empty($val['diff'])?$val['diff']:$val['diff']=0;</span></span><br><span class="line"><span class="string">        $sql = "</span><span class="keyword">UPDATE</span> member_fangwen_log <span class="keyword">SET</span> f_shichang=&#123;$val[<span class="string">'diff'</span>]&#125; <span class="keyword">WHERE</span> f_id=&#123;$val[<span class="string">'f_id'</span>]&#125; <span class="keyword">AND</span> f_shichang&lt;<span class="number">0</span> <span class="keyword">limit</span> <span class="number">1</span><span class="string">";</span></span><br><span class="line"><span class="string">        $res = db_exec($sql);</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure>
-<p>可以计算出每个用户相邻2条访问记录之间的时长</p>
-
+            <h4 id="记录一下ffmpeg的使用"><a href="#记录一下ffmpeg的使用" class="headerlink" title="记录一下ffmpeg的使用"></a>记录一下ffmpeg的使用</h4><blockquote>
+<p>ffmpeg是一款纯命令行工具， <a href="http://www.ffmpeg.org/download.html">下载地址</a></p>
+</blockquote>
+<h2 id="我是使用的windows版"><a href="#我是使用的windows版" class="headerlink" title="我是使用的windows版"></a>我是使用的windows版</h2><ul>
+<li>下载下来解压，无需安装</li>
+<li>这里有个小插曲<ul>
+<li>应为习惯原因，我下载下来后添加到了环境变量，然后用cmd试验了下，没问题</li>
+<li>结果，我在php代码里死活不成功，代码如下<blockquote>
+<p>$command = ‘ffmpeg -y -i ‘.$TEMP_VIDEO.’ -vf “ass=’.$cache_ass_path.’” ‘.$out_put_file;<br>system($command);</p>
+</blockquote>
+</li>
+<li>搞了半天不明白为啥错误</li>
+<li>最后改这样成功运行<blockquote>
+<p>$command = ‘D:\ffmpeg\bin\ffmpeg.exe -y -i ‘.$TEMP_VIDEO.’ -vf “ass=’.$cache_ass_path.’” ‘.$out_put_file;<br>system($command);</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="上面的错误觉得有必要记录一下，直接写绝对路径，虽然环境变量里在cmd运行没问题，但代码里不行，我推测是权限的问题"><a href="#上面的错误觉得有必要记录一下，直接写绝对路径，虽然环境变量里在cmd运行没问题，但代码里不行，我推测是权限的问题" class="headerlink" title="上面的错误觉得有必要记录一下，直接写绝对路径，虽然环境变量里在cmd运行没问题，但代码里不行，我推测是权限的问题"></a>上面的错误觉得有必要记录一下，直接写绝对路径，虽然环境变量里在cmd运行没问题，但代码里不行，我推测是权限的问题</h4><h4 id="上面的代码会给视频添加自定义字幕，输出成一张gif图片，很简单哦！"><a href="#上面的代码会给视频添加自定义字幕，输出成一张gif图片，很简单哦！" class="headerlink" title="上面的代码会给视频添加自定义字幕，输出成一张gif图片，很简单哦！"></a>上面的代码会给视频添加自定义字幕，输出成一张gif图片，很简单哦！</h4>
         </div>
         <div class="post-tool social-share" data-disabled="google,twitter,facebook,douban,qzone,linkedin" data-mode="prepend">
 
@@ -163,7 +180,7 @@
             
             <div class="post-tags">标签：
                 
-                <a href="/tags/mysql/">Mysql</a>
+                <a href="/tags/php/">Php</a>
                 
             </div>
             
@@ -198,7 +215,7 @@
             repo: 'lnew.github.io',
             owner: 'lnew',
             admin: ['lnew'],
-            id: '数据表2条数据相邻的时间差',      // Ensure uniqueness and length less than 50
+            id: 'Php处理视频工具ffmpeg',      // Ensure uniqueness and length less than 50
             distractionFreeMode: false  // Facebook-like distraction free mode
         })
 
