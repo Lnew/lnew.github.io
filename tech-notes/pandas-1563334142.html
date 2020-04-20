@@ -1,1 +1,655 @@
-<!DOCTYPE HTML><html class="no-js" lang="zh-CN"><head><meta name="generator" content="Hexo 3.9.0"><meta name="baidu-site-verification" content="lVNDN1Y3L8"><!--[if lte IE 9]><meta http-equiv="refresh" content="0;url=https://lzz1.top/warn.html"><![endif]--><meta charset="UTF-8"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://lzz1.top"><link rel="dns-prefetch" href="//www.google-analytics.com"><link rel="prefetch" href="https://lzz1.top"><link rel="prefetch" href="//www.google-analytics.com"><link rel="prerender" href="https://lzz1.top"><meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1"><meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,user-scalable=no"><meta name="renderer" content="webkit"><meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"><meta http-equiv="X-UA-Compatible" content="IE=Edge"><meta http-equiv="mobile-agent" content="format=html5; url=https://lzz1.top"><meta name="author" content="lzz(https://lzz1.top)"><link rel="shortcut icon" href="/images/favicon.ico"><title>pandas处理csv数据入库二 - 寂寞归云隐 ❤ 博客</title><meta name="keywords" content="pandas"><meta name="description " content="pandas处理csv数据入库二"><link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css"><link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css"><link rel="stylesheet" href="/css/common.css"><link rel="stylesheet" href="/css/social-share.min.css"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><script>(adsbygoogle=window.adsbygoogle||[]).push({google_ad_client:"ca-pub-2800751316188740",enable_page_level_ads:!0})</script><script async src="//www.googletagmanager.com/gtag/js?id=UA-135125862-1"></script><script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","UA-135125862-1")</script><script>var _hmt=window._hmt||[];!function(){var e=document.createElement("script");e.src="https://hm.baidu.com/hm.js?38327e03d3436dbd99262444faf80467";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)}()</script></head><body><header class="header"><nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container"><div class="navbar-header"><button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" style="padding-top:0" href="/"><img src="/images/logo.png" height="50"></a></div><div class="collapse navbar-collapse" id="navbar-collapse"><ul class="nav navbar-nav navbar-right"><li class="nav-item active>"><a class="nav-link" href="/">首页</a></li><li class="nav-item"><a class="nav-link" href="/categories/tech-notes/" data-name="随笔">随笔</a></li><li class="nav-item"><a class="nav-link" href="/archives/">归档</a></li><form id="search" class="navbar-form navbar-left" role="search"><div class="form-search hidden-sm hidden-md"><input type="text" class="form-control" readonly id="local-search-input-tip" placeholder="读物检索~"></div></form></ul></div></div></nav></header><div class="container" id="content-container"><div class="row"><main class="col-md-8"><div class="panel panel-default markdown-body"><div class="panel-heading"><div class="media media-number"><div class="media-left"><a class="avatar" href="https://lzz1.top" target="_blank"><img width="48" src="/images/favicon.ico" alt="avatar"></a></div><div class="media-body"><p><span class="label">作者</span> <a href="https://lzz1.top" target="_blank">lzz</a> <span title="最后编辑于&nbsp;2019-07-17">2019-07-17</span></p><p>另一个搬🧱的劳斯基😁️️</p></div></div><h2 class="post-title">Pandas处理csv数据入库二</h2><div class="post-meta">本文共计4584个字 | 您是第&nbsp;<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>位看到它们的小伙伴</div></div><div class="panel-body"><h4 id="python-环境-Anaconda-5-2-0"><a href="#python-环境-Anaconda-5-2-0" class="headerlink" title="python 环境-Anaconda 5.2.0"></a>python 环境-Anaconda 5.2.0</h4><h4 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h4><ul><li>sh201001d<ul><li>20100104<ul><li>600000_20100104.csv</li></ul></li><li>20100105<ul><li>600000_20100105.csv</li></ul></li><li>20100106<ul><li>600000_20100106.csv</li></ul></li></ul></li></ul><figure class="highlight tcl"><table><tr><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line">import os</span><br><span class="line"></span><br><span class="line">import pandas as pd</span><br><span class="line"></span><br><span class="line">from sqlalchemy import create_engine</span><br><span class="line"></span><br><span class="line"><span class="comment">#显示所有列</span></span><br><span class="line"><span class="comment">#pd.set_option('display.max_columns', None)</span></span><br><span class="line"><span class="comment">#显示所有行</span></span><br><span class="line"><span class="comment">#pd.set_option('display.max_rows', None)</span></span><br><span class="line">pd.set_option(<span class="string">'display.float_format'</span>,lambda x : <span class="string">'%.2f'</span> % x)</span><br><span class="line"></span><br><span class="line">file_dir = <span class="string">"D:\\BaiduNetdiskDownload\\2008-2018\\tick2010d\\sh201001d"</span></span><br><span class="line">prefix = <span class="string">'sh'</span></span><br><span class="line"><span class="comment"># 数据库</span></span><br><span class="line">engine = create_engine(<span class="string">'mysql+pymysql://root:@localhost:3306/gp_minute?charset=utf8&amp;autocommit=true'</span>,echo=True)</span><br><span class="line"><span class="comment"># 获取目录下所有文件名</span></span><br><span class="line">def file_name(file_dir):</span><br><span class="line">    file_list= [([]) <span class="keyword">for</span> i in range(<span class="number">2</span>)]</span><br><span class="line">    <span class="keyword">for</span> root,dirs,files in os.walk(file_dir):</span><br><span class="line">        <span class="keyword">if</span> files:</span><br><span class="line">            file_list[<span class="number">0</span>].<span class="keyword">append</span>(root)</span><br><span class="line">            file_list[<span class="number">1</span>].<span class="keyword">append</span>(files)</span><br><span class="line">    <span class="keyword">return</span> file_list</span><br><span class="line">    </span><br><span class="line">files = file_name(file_dir)</span><br><span class="line"><span class="comment">#file = 'sh600000.csv'</span></span><br><span class="line"><span class="keyword">for</span> index in range(<span class="number">0</span>,len(files[<span class="number">0</span>])):</span><br><span class="line">    <span class="keyword">for</span> <span class="keyword">file</span> in files[<span class="number">1</span>][index]:</span><br><span class="line">        table_name = prefix+<span class="keyword">file</span>.<span class="keyword">split</span>(<span class="string">'_'</span>)[<span class="number">0</span>]</span><br><span class="line">        raw = pd.read_csv(<span class="string">'%s\\%s'</span>%(files[<span class="number">0</span>][index],<span class="keyword">file</span>),names=[<span class="string">'时间'</span>,<span class="string">'成交笔数'</span>,<span class="string">'成交额'</span>,<span class="string">'成交量'</span>,<span class="string">'方向'</span>],<span class="keyword">encoding</span>=<span class="string">'GBK'</span>, skiprows=<span class="number">1</span>,usecols=[<span class="number">2</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>],header=None)</span><br><span class="line">        raw[<span class="string">'时间'</span>] = pd.to_datetime(raw[<span class="string">'时间'</span>]).dt.strftime(<span class="string">'%Y%m%d%H%M'</span>)</span><br><span class="line">        raw[<span class="string">'成交量'</span>] = raw[<span class="string">'成交量'</span>]*<span class="number">100</span></span><br><span class="line"><span class="comment">        #print(raw.head())</span></span><br><span class="line"><span class="comment">        # 获取分组时间</span></span><br><span class="line">        result = raw.groupby(raw[<span class="string">'时间'</span>]).size().reset_index().drop(columns=[<span class="number">0</span>])</span><br><span class="line">        result.columns = [<span class="string">'s_datemin'</span>]</span><br><span class="line"><span class="comment">        # 计算价格平均值--去掉成交量为零的行</span></span><br><span class="line">        s_price = raw.loc[raw[<span class="string">'成交量'</span>]!=<span class="number">0</span>]</span><br><span class="line">        s_price = (s_price[<span class="string">'成交额'</span>].groupby(s_price[<span class="string">'时间'</span>]).mean()/(s_price[<span class="string">'成交量'</span>]).groupby(s_price[<span class="string">'时间'</span>]).mean()).reset_index(name=<span class="string">'均成交额'</span>)</span><br><span class="line">        s_price.columns = [<span class="string">'s_datemin'</span>,<span class="string">'s_price'</span>]</span><br><span class="line"><span class="comment">        #print(s_price[:5])</span></span><br><span class="line"><span class="comment">        # 分割--B</span></span><br><span class="line">        b_result = raw.loc[raw[<span class="string">'方向'</span>]==<span class="string">'B'</span>]</span><br><span class="line">        b_result = (b_result[[<span class="string">'成交额'</span>,<span class="string">'成交量'</span>,<span class="string">'成交笔数'</span>]].groupby(b_result[<span class="string">'时间'</span>]).sum()).reset_index()</span><br><span class="line"><span class="comment">        #print(b_result[:5])</span></span><br><span class="line">        b_result.columns = [<span class="string">'s_datemin'</span>,<span class="string">'s_bvalue'</span>,<span class="string">'s_bshou'</span>,<span class="string">'s_bci'</span>]</span><br><span class="line"><span class="comment">        # 分割--S</span></span><br><span class="line">        s_result = raw.loc[raw[<span class="string">'方向'</span>]==<span class="string">'S'</span>]</span><br><span class="line">        s_result = (s_result[[<span class="string">'成交额'</span>,<span class="string">'成交量'</span>,<span class="string">'成交笔数'</span>]].groupby(s_result[<span class="string">'时间'</span>]).sum()).reset_index()</span><br><span class="line"><span class="comment">        #print(s_result[:5])</span></span><br><span class="line">        s_result.columns = [<span class="string">'s_datemin'</span>,<span class="string">'s_svalue'</span>,<span class="string">'s_sshou'</span>,<span class="string">'s_sci'</span>]</span><br><span class="line"><span class="comment">        # 分割--Z</span></span><br><span class="line">        z_result = raw.loc[~raw[<span class="string">'方向'</span>].isin([<span class="string">'B'</span>,<span class="string">'S'</span>])]</span><br><span class="line">        z_result = (z_result[[<span class="string">'成交额'</span>,<span class="string">'成交量'</span>,<span class="string">'成交笔数'</span>]].groupby(z_result[<span class="string">'时间'</span>]).sum()).reset_index()</span><br><span class="line"><span class="comment">        #print(z_result[:5])</span></span><br><span class="line">        z_result.columns = [<span class="string">'s_datemin'</span>,<span class="string">'s_zvalue'</span>,<span class="string">'s_zshou'</span>,<span class="string">'s_zci'</span>]</span><br><span class="line"><span class="comment">        #合并数据</span></span><br><span class="line">        <span class="keyword">info</span> = pd.merge(result,s_price,on=<span class="string">'s_datemin'</span>,how=<span class="string">'left'</span>)</span><br><span class="line">        <span class="keyword">info</span> = pd.merge(<span class="keyword">info</span>,b_result,on=<span class="string">'s_datemin'</span>,how=<span class="string">'left'</span>)</span><br><span class="line">        <span class="keyword">info</span> = pd.merge(<span class="keyword">info</span>,s_result,on=<span class="string">'s_datemin'</span>,how=<span class="string">'left'</span>)</span><br><span class="line">        <span class="keyword">info</span> = pd.merge(<span class="keyword">info</span>,z_result,on=<span class="string">'s_datemin'</span>,how=<span class="string">'left'</span>)</span><br><span class="line">        <span class="keyword">info</span>.fillna(<span class="number">0</span>,inplace=True)</span><br><span class="line">        <span class="keyword">info</span>.ix[<span class="keyword">info</span>[<span class="string">'s_price'</span>].isin([<span class="string">'inf'</span>]),<span class="string">'s_price'</span>]=<span class="number">0</span></span><br><span class="line">        <span class="keyword">info</span>[<span class="string">'s_price'</span>] = <span class="keyword">info</span>[<span class="string">'s_price'</span>].round(<span class="number">2</span>)</span><br><span class="line"><span class="comment">        # 创建数据库</span></span><br><span class="line"><span class="comment">        #### 检测数据库是否存在</span></span><br><span class="line"><span class="comment">        #table_name = file[:-4]</span></span><br><span class="line">        sql = <span class="string">'SELECT table_name FROM information_schema.TABLES WHERE table_name = "%s"'</span>%(table_name)</span><br><span class="line">        df = pd.read_sql_query(sql, engine)</span><br><span class="line">        <span class="keyword">if</span> df.empty:</span><br><span class="line">            sql = <span class="string">''</span><span class="string">'</span></span><br><span class="line"><span class="string">            CREATE TABLE `%s` (</span></span><br><span class="line"><span class="string">              `s_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '</span>主键自增<span class="string">',</span></span><br><span class="line"><span class="string">              `s_datemin` bigint(20) NULL COMMENT '</span>分钟 <span class="number">201901010930</span> 唯一<span class="string">',</span></span><br><span class="line"><span class="string">              `s_price` float(8,2) NULL COMMENT '</span>价格，本分钟价格平均值<span class="string">',</span></span><br><span class="line"><span class="string">              `s_bvalue` bigint(20) NULL DEFAULT '</span><span class="number">0</span><span class="string">' COMMENT '</span>本分钟买入金额，单位元<span class="string">',</span></span><br><span class="line"><span class="string">              `s_bshou` int(11) NULL DEFAULT '</span><span class="number">0</span><span class="string">' COMMENT '</span>本分买入股票数 单位股<span class="string">',</span></span><br><span class="line"><span class="string">              `s_bci` int(11) NULL DEFAULT '</span><span class="number">0</span><span class="string">' COMMENT '</span>本分钟 买入交易次数<span class="string">',</span></span><br><span class="line"><span class="string">              `s_svalue` bigint(20) NULL DEFAULT '</span><span class="number">0</span><span class="string">' COMMENT '</span>本分钟 卖场价值 单位元<span class="string">',</span></span><br><span class="line"><span class="string">              `s_sshou` int(11) NULL DEFAULT '</span><span class="number">0</span><span class="string">' COMMENT '</span>本分钟卖出 股票数<span class="string">',</span></span><br><span class="line"><span class="string">              `s_sci` int(11) NULL DEFAULT '</span><span class="number">0</span><span class="string">' COMMENT '</span>本分卖出交易次数<span class="string">',</span></span><br><span class="line"><span class="string">              `s_zvalue` bigint(20) NULL DEFAULT '</span><span class="number">0</span><span class="string">' COMMENT '</span>本分钟 中性成交金额 单位元<span class="string">',</span></span><br><span class="line"><span class="string">              `s_zshou` int(11) NULL DEFAULT '</span><span class="number">0</span><span class="string">' COMMENT '</span>本分钟中性 股数<span class="string">',</span></span><br><span class="line"><span class="string">              `s_zci` int(11) NULL DEFAULT '</span><span class="number">0</span><span class="string">' COMMENT '</span>本分钟 中性交易次数<span class="string">',</span></span><br><span class="line"><span class="string">               PRIMARY KEY (`s_id`),</span></span><br><span class="line"><span class="string">               UNIQUE KEY `s_datem` (`s_datemin`)</span></span><br><span class="line"><span class="string">            ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='</span>股票历史每分钟交易次及交易量<span class="string">' AUTO_INCREMENT=1 ;</span></span><br><span class="line"><span class="string">            '</span><span class="string">''</span>%(table_name)</span><br><span class="line">            engine.execute(sql)</span><br><span class="line"><span class="comment">        #else:</span></span><br><span class="line"><span class="comment">            #sql = 'alter table `%s` modify column `s_bvalue` bigint(20),modify column `s_svalue` bigint(20),modify column `s_zvalue` bigint(20);'%(table_name)</span></span><br><span class="line"><span class="comment">            #engine.execute(sql)</span></span><br><span class="line">        pd.io.sql.to_sql(<span class="keyword">info</span>,table_name,con=engine,if_exists=<span class="string">'append'</span>, index=False, chunksize=<span class="number">10000</span>)</span><br><span class="line"><span class="comment">        ## 删除已执行文件</span></span><br><span class="line">        os.remove(<span class="string">'%s\\%s'</span>%(files[<span class="number">0</span>][index],<span class="keyword">file</span>))</span><br></pre></td></tr></table></figure></div><div class="post-tool social-share" data-disabled="google,twitter,facebook,douban,qzone,linkedin" data-mode="prepend"></div><div class="panel-footer"><div class="post-tags">标签： <a href="/tags/python/">Python</a></div><p style="text-align:center">本文代表个人观点，内容仅供参考。若有不恰当之处，望不吝赐教！</p><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-2800751316188740" data-ad-slot="" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script><section id="comments"><div id="gitalk-container"></div><link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"><style>.markdown-body *{-webkit-box-sizing:content-box;box-sizing:content-box}</style><script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script><script>var gitalk=new Gitalk({clientID:"3371b856dd39533341dd",clientSecret:"d11de7ffd8f324d3996cdb17766f51f5212bc13f",repo:"lnew.github.io",owner:"lnew",admin:["lnew"],id:"Pandas处理csv数据入库二",distractionFreeMode:!1});gitalk.render("gitalk-container")</script></section></div></div></main><script src="/js/busuanzi.pure.mini.js"></script><script src="/js/social-share.min.js"></script><aside class="col-xs-12 col-sm-4"><div class="panel panel-default lasest-update"><div class="panel-heading"><h3 class="panel-title">最近</h3></div><div class="panel-body"><ul class="list-unstyled"><li><a class="link-dark" href="/tech-notes/progress-1578290813.html" title="Php进度条">Php进度条</a></li><li><a class="link-dark" href="/tech-notes/php-ffmpeg-1575113803.html" title="Php处理视频工具ffmpeg">Php处理视频工具ffmpeg</a></li><li><a class="link-dark" href="/tech-notes/mysql-1573638650.html" title="Sql动态行列转换">Sql动态行列转换</a></li><li><a class="link-dark" href="/tech-notes/js-1566876082.html" title="Js格式化时间">Js格式化时间</a></li><li><a class="link-dark" href="/tech-notes/php-1565231211.html" title="Php解析nginx日志">Php解析nginx日志</a></li><li><a class="link-dark" href="/tech-notes/php-1564633627.html" title="CentOS7安装php扩展ssh2">CentOS7安装php扩展ssh2</a></li><li><a class="link-dark" href="/tech-notes/php-1563875831.html" title="在一组数中，找给定值Target最近的k个数">在一组数中，找给定值Target最近的k个数</a></li><li><a class="link-dark" href="/tech-notes/pandas-1563334142.html" title="Pandas处理csv数据入库二">Pandas处理csv数据入库二</a></li><li><a class="link-dark" href="/tech-notes/pandas-1562901077.html" title="初用Pandas操作记录">初用Pandas操作记录</a></li><li><a class="link-dark" href="/tech-notes/mysql-1562661148.html" title="Mysql主从同步第二篇">Mysql主从同步第二篇</a></li></ul></div></div><div class="panel panel-blockimg"><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-2800751316188740" data-ad-slot="" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script></div><div class="panel panel-default hot-tags"><div class="panel-heading"><h3 class="panel-title">热门标签</h3></div><div class="panel-body"><div class="tags"><a href="/tags/excel/" class="tag"><span>Excel(1)</span></a> <a href="/tags/hexo/" class="tag"><span>Hexo(2)</span></a> <a href="/tags/javascript/" class="tag"><span>JavaScript(1)</span></a> <a href="/tags/Javascript/" class="tag"><span>Javascript(2)</span></a> <a href="/tags/linux/" class="tag"><span>Linux(3)</span></a> <a href="/tags/mysql/" class="tag"><span>Mysql(10)</span></a> <a href="/tags/php/" class="tag"><span>Php(21)</span></a> <a href="/tags/python/" class="tag"><span>Python(7)</span></a> <a href="/tags/website/" class="tag"><span>网站(1)</span></a> <a href="/tags/caiji/" class="tag"><span>采集(2)</span></a> <a href="/tags/music/" class="tag"><span>音乐(2)</span></a></div></div></div><div class="panel panel-default recommend-article"><div class="panel-heading"><h3 class="panel-title">推荐工具</h3></div><div class="panel-body"><div class="media media-number"><div class="media-left"><span class="num">1</span></div><div class="media-body"><a href="https://www.jetbrains.com/zh/phpstorm/" target="_blank" title="PhpStorm 高效的php IDE，代码编辑器">PhpStorm 高效的php IDE，代码编辑器</a></div></div><div class="media media-number"><div class="media-left"><span class="num">2</span></div><div class="media-body"><a href="https://www.dcloud.io/" target="_blank" title="Hbuilder 跨平台开发工具，一套代码多端使用，我是觉得的真的强大">Hbuilder 跨平台开发工具，一套代码多端使用，我是觉得的真的强大</a></div></div><div class="media media-number"><div class="media-left"><span class="num">3</span></div><div class="media-body"><a href="https://www.getpostman.com/" target="_blank" title="Postman 模拟请求工具，api对接好帮手">Postman 模拟请求工具，api对接好帮手</a></div></div><div class="media media-number"><div class="media-left"><span class="num">4</span></div><div class="media-body"><a href="http://www.formysql.com/" target="_blank" title="Navicat for MySql 数据库操作工具，轻便，易用">Navicat for MySql 数据库操作工具，轻便，易用</a></div></div><div class="media media-number"><div class="media-left"><span class="num">5</span></div><div class="media-body"><a href="https://laravelacademy.org/" target="_blank" title="Laravel php优秀框架，文档插件齐全，快速建站必备">Laravel php优秀框架，文档插件齐全，快速建站必备</a></div></div><div class="media media-number"><div class="media-left"><span class="num">6</span></div><div class="media-body"><a href="http://www.thinkphp.cn/" target="_blank" title="Thinkphp 另一个php优秀框架，二次开发的开源框架很多，快速建站必备">Thinkphp 另一个php优秀框架，二次开发的开源框架很多，快速建站必备</a></div></div><div class="media media-number"><div class="media-left"><span class="num">7</span></div><div class="media-body"><a href="https://github.com/" target="_blank" title="Github 这个站就不多描述了，大家都知道~">Github 这个站就不多描述了，大家都知道~</a></div></div><div class="media media-number"><div class="media-left"><span class="num">8</span></div><div class="media-body"><a href="https://www.aliyun.com/" target="_blank" title="阿里云 上云就上阿里云">阿里云 上云就上阿里云</a></div></div><div class="media media-number"><div class="media-left"><span class="num">9</span></div><div class="media-body"><a href="https://reactnative.cn/" target="_blank" title="React Native 使用JavaScript和React编写原生移动应用，功能强大">React Native 使用JavaScript和React编写原生移动应用，功能强大</a></div></div><div class="media media-number"><div class="media-left"><span class="num">10</span></div><div class="media-body"><a href="https://codecombat.163.com/" target="_blank" title="极客战记 网易的编程游戏，多种语言，感觉还是蛮有意思的">极客战记 网易的编程游戏，多种语言，感觉还是蛮有意思的</a></div></div><div class="media media-number"><div class="media-left"><span class="num">11</span></div><div class="media-body"><a href="https://www.easywechat.com/" target="_blank" title="EasyWeChat 使用很方便的非官方微信php-sdk，授权登陆，支付快速搞定">EasyWeChat 使用很方便的非官方微信php-sdk，授权登陆，支付快速搞定</a></div></div><div class="media media-number"><div class="media-left"><span class="num">12</span></div><div class="media-body"><a href="https://www.iconfont.cn/" target="_blank" title="Iconfont 一个很好的图标库，UI库">Iconfont 一个很好的图标库，UI库</a></div></div><div class="media media-number"><div class="media-left"><span class="num">13</span></div><div class="media-body"><a href="https://cn.vuejs.org/" target="_blank" title="Vue 渐进式 JavaScript 框架，很火的前端框架，易用，灵活，高效">Vue 渐进式 JavaScript 框架，很火的前端框架，易用，灵活，高效</a></div></div><div class="media media-number"><div class="media-left"><span class="num">14</span></div><div class="media-body"><a href="https://www.yiibai.com/" target="_blank" title="易百教程 涉及多种语言的代码示例，教程，看一看还是很有长进的">易百教程 涉及多种语言的代码示例，教程，看一看还是很有长进的</a></div></div><div class="media media-number"><div class="media-left"><span class="num">15</span></div><div class="media-body"><a href="http://www.itcast.cn/" target="_blank" title="传智播客 这个大家上去看看视频还是不错的，视频都可以从百度云盘下载下来">传智播客 这个大家上去看看视频还是不错的，视频都可以从百度云盘下载下来</a></div></div><div class="media media-number"><div class="media-left"><span class="num">16</span></div><div class="media-body"><a href="https://leancloud.cn/" target="_blank" title="LeanCloud 可以免费托管一些数据😜">LeanCloud 可以免费托管一些数据😜</a></div></div><div class="media media-number"><div class="media-left"><span class="num">17</span></div><div class="media-body"><a href="http://doc.workerman.net/" target="_blank" title="Workerman 高性能socket服务框架，极简、稳定、高性能、分布式。">Workerman 高性能socket服务框架，极简、稳定、高性能、分布式。</a></div></div><div class="media media-number"><div class="media-left"><span class="num">18</span></div><div class="media-body"><a href="https://tushare.pro/" target="_blank" title="Tushare 金融大数据开放社区">Tushare 金融大数据开放社区</a></div></div><div class="media media-number"><div class="media-left"><span class="num">19</span></div><div class="media-body"><a href="https://api.i-meto.com/" target="_blank" title="萨摩工具箱 有好货！！！😍">萨摩工具箱 有好货！！！😍</a></div></div></div></div></aside></div></div><div class="container hidden-xs j-partner"><div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">友情链接</h3></div><div class="panel-body"><div class="list-unstyled list-links"><a href="https://music.163.com/" target="_blank" title="网易云音乐">网易云音乐</a> <a href="https://y.qq.com/" target="_blank" title="QQ音乐">QQ音乐</a> <a href="https://www.xiami.com/" target="_blank" title="虾米音乐">虾米音乐</a> <a href="https://www.kugou.com/" target="_blank" title="酷狗音乐">酷狗音乐</a> <a href="https://music.taihe.com/" target="_blank" title="百度音乐">百度音乐</a></div></div></div></div><footer style="clear:both;text-align:center"><div class="container-fluid" id="footer"><div class="container"><div class="row footer-inner"><footer class="footer p-0"><div class="footer-inner p-0"><p><a href="/about/" title="关于">关于</a>&nbsp;&nbsp<em>·</em>&nbsp;&nbsp <a href="/sitemap.xml" title="地图">地图</a></p><p>本站已建立&nbsp<a href="/timeline" id="siteBuildingTime"></a>&nbsp天，<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="licence">采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议创作</a><br>©2018-<span id="cpYear"></span> 基于&nbsp<a href="http://hexo.io" target="_blank" rel="nofollow">Hexo</a> ，主题采用&nbsp&nbsp<a href="https://demo.fastadmin.net/cms" target="_blank" rel="bookmark">fastadmin-cms</a> ，作者&nbsp<a href="https://lzz1.top" target="_blank" rel="friend">lzz</a> ，Hosted by <a href="https://pages.github.com/" target="_blank" rel="nofollow">GitHub Pages</a></p></div></footer></div></div></div></footer><div class="popup search-popup local-search-popup"><div class="local-search-header clearfix"><span class="search-icon"><i class="fa fa-search"></i></span><span class="popup-btn-close"><i class="fa fa-times-circle"></i></span><div class="local-search-input-wrapper"><input id="local-search-input" spellcheck="false" type="text" autocomplete="off" placeholder="请输入查询关键词"></div></div><div id="local-search-result"></div></div><div class="fixed-btn"><a class="btn-gotop" href="javascript:"><i class="fa fa-angle-up"></i></a></div><iframe style="position:fixed;bottom:0;right:0;background-color:#fff" id="musicframe" src="/music.html" frameborder="0" scrolling="no" class="col-lg-3 col-md-4 col-sm-12"></iframe><script src="/js/SimpleCore.js"></script><script src="/bootstrap/js/bootstrap.min.js"></script><script>$(function(){SimpleCore.init({buildingTime:"02/19/2019",current:0<$(".post-tags").length?"post":"archive",snsQRCode:"/img/2019/wx_xcx.jpg",donateImg:"/images/donate-qr.png",localSearch:{dbPath:"/search.json",trigger:"auto",topN:"1",unescape:"false"}});var t=document.createElement("script"),e=window.location.protocol.split(":")[0];t.src="https"===e?"https://zz.bdstatic.com/linksubmit/push.js":"http://push.zhanzhang.baidu.com/push.js";var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(t,s)})</script></body></html>
+<!DOCTYPE HTML>
+<html class="no-js" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta name="baidu-site-verification" content="lVNDN1Y3L8">
+    <!--[if lte IE 9]>
+    <meta http-equiv="refresh" content="0;url=https://lzz1.top/warn.html">
+    <![endif]-->
+    <meta charset="UTF-8">
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+    <!--dns预加载提升加载性能-->
+    <link rel="dns-prefetch" href="https://lzz1.top">
+    <link rel="dns-prefetch" href="//www.google-analytics.com">
+    <!--优化下次导航-->
+    <link rel="prefetch" href="https://lzz1.top">
+    <link rel="prefetch" href="//www.google-analytics.com">
+    <link rel="prerender" href="https://lzz1.top">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="renderer" content="webkit">
+
+    
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta http-equiv="mobile-agent" content="format=html5; url=https://lzz1.top">
+    <meta name="author" content="lzz(https://lzz1.top)">
+    
+    <link rel="shortcut icon" href="/images/favicon.ico">
+    
+    
+    <title>pandas处理csv数据入库二 - 寂寞归云隐 ❤ 博客</title>
+    
+    <meta name="keywords" content="pandas">
+    
+    <meta name="description " content="pandas处理csv数据入库二">
+    <!--加载静态资源-->
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/common.css">
+<link rel="stylesheet" href="/css/social-share.min.css">
+
+    
+    <!-- 自动广告 -->
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({
+            google_ad_client: "ca-pub-2800751316188740",
+            enable_page_level_ads: true
+        });
+    </script>
+
+
+    
+    
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="//www.googletagmanager.com/gtag/js?id=UA-135125862-1"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'UA-135125862-1');
+        </script>
+    
+    <!-- put your likes here. -->
+
+
+
+    
+    
+        <script>
+            var _hmt = window._hmt || [];
+            (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?38327e03d3436dbd99262444faf80467";
+                var s = document.getElementsByTagName("script")[0];
+                s.parentNode.insertBefore(hm, s);
+            })();
+        </script>
+    
+<!-- put your likes here. -->
+
+</head>
+<body>
+<header class="header">
+    <!-- S 导航 -->
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" style="padding-top: 0" href="/"><img src="/images/logo.png" height="50"></a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="nav-item active>">
+                        <a class="nav-link" href="/">首页</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="/categories/tech-notes/" data-name="随笔">随笔</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="/archives/">归档</a>
+                    </li>
+
+                    <form id="search" class="navbar-form navbar-left" role="search">
+    <div class="form-search hidden-sm hidden-md">
+        <input type="text" class="form-control" readonly="readonly" id="local-search-input-tip" placeholder="读物检索~">
+    </div>
+</form>
+                </ul>
+            </div>
+
+        </div>
+    </nav>
+    <!-- E 导航 -->
+
+</header>
+<div class="container" id="content-container">
+
+    <div class="row">
+
+        <main class="col-md-8">
+    <div class="panel panel-default markdown-body">
+        <div class="panel-heading">
+            <div class="media media-number">
+                <div class="media-left">
+                    <a class="avatar" href="https://lzz1.top" target="_blank">
+                        <img width="48" src="/images/favicon.ico" alt="avatar">
+                    </a>
+                </div>
+                <div class="media-body">
+                    <p><span class="label">作者</span>
+                        <a href="https://lzz1.top" target="_blank">lzz</a>
+                        <span title="最后编辑于&nbsp;2019-07-17">2019-07-17</span>
+                    </p>
+                    <p>另一个搬🧱的劳斯基😁️️</p>
+                </div>
+            </div>
+            <h2 class="post-title">Pandas处理csv数据入库二</h2>
+            <div class="post-meta">
+                本文共计4584个字 |
+                您是第&nbsp;<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>位看到它们的小伙伴
+            </div>
+        </div>
+        <div class="panel-body">
+            <h4 id="python-环境-Anaconda-5-2-0"><a href="#python-环境-Anaconda-5-2-0" class="headerlink" title="python 环境-Anaconda 5.2.0"></a>python 环境-Anaconda 5.2.0</h4><h4 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h4><ul>
+<li>sh201001d<ul>
+<li>20100104<ul>
+<li>600000_20100104.csv</li>
+</ul>
+</li>
+<li>20100105<ul>
+<li>600000_20100105.csv</li>
+</ul>
+</li>
+<li>20100106<ul>
+<li>600000_20100106.csv</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight tcl"><table><tr><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line">import os</span><br><span class="line"></span><br><span class="line">import pandas as pd</span><br><span class="line"></span><br><span class="line">from sqlalchemy import create_engine</span><br><span class="line"></span><br><span class="line"><span class="comment">#显示所有列</span></span><br><span class="line"><span class="comment">#pd.set_option('display.max_columns', None)</span></span><br><span class="line"><span class="comment">#显示所有行</span></span><br><span class="line"><span class="comment">#pd.set_option('display.max_rows', None)</span></span><br><span class="line">pd.set_option(<span class="string">'display.float_format'</span>,lambda x : <span class="string">'%.2f'</span> % x)</span><br><span class="line"></span><br><span class="line">file_dir = <span class="string">"D:\\BaiduNetdiskDownload\\2008-2018\\tick2010d\\sh201001d"</span></span><br><span class="line">prefix = <span class="string">'sh'</span></span><br><span class="line"><span class="comment"># 数据库</span></span><br><span class="line">engine = create_engine(<span class="string">'mysql+pymysql://root:@localhost:3306/gp_minute?charset=utf8&amp;autocommit=true'</span>,echo=True)</span><br><span class="line"><span class="comment"># 获取目录下所有文件名</span></span><br><span class="line">def file_name(file_dir):</span><br><span class="line">    file_list= [([]) <span class="keyword">for</span> i in range(<span class="number">2</span>)]</span><br><span class="line">    <span class="keyword">for</span> root,dirs,files in os.walk(file_dir):</span><br><span class="line">        <span class="keyword">if</span> files:</span><br><span class="line">            file_list[<span class="number">0</span>].<span class="keyword">append</span>(root)</span><br><span class="line">            file_list[<span class="number">1</span>].<span class="keyword">append</span>(files)</span><br><span class="line">    <span class="keyword">return</span> file_list</span><br><span class="line">    </span><br><span class="line">files = file_name(file_dir)</span><br><span class="line"><span class="comment">#file = 'sh600000.csv'</span></span><br><span class="line"><span class="keyword">for</span> index in range(<span class="number">0</span>,len(files[<span class="number">0</span>])):</span><br><span class="line">    <span class="keyword">for</span> <span class="keyword">file</span> in files[<span class="number">1</span>][index]:</span><br><span class="line">        table_name = prefix+<span class="keyword">file</span>.<span class="keyword">split</span>(<span class="string">'_'</span>)[<span class="number">0</span>]</span><br><span class="line">        raw = pd.read_csv(<span class="string">'%s\\%s'</span>%(files[<span class="number">0</span>][index],<span class="keyword">file</span>),names=[<span class="string">'时间'</span>,<span class="string">'成交笔数'</span>,<span class="string">'成交额'</span>,<span class="string">'成交量'</span>,<span class="string">'方向'</span>],<span class="keyword">encoding</span>=<span class="string">'GBK'</span>, skiprows=<span class="number">1</span>,usecols=[<span class="number">2</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>],header=None)</span><br><span class="line">        raw[<span class="string">'时间'</span>] = pd.to_datetime(raw[<span class="string">'时间'</span>]).dt.strftime(<span class="string">'%Y%m%d%H%M'</span>)</span><br><span class="line">        raw[<span class="string">'成交量'</span>] = raw[<span class="string">'成交量'</span>]*<span class="number">100</span></span><br><span class="line"><span class="comment">        #print(raw.head())</span></span><br><span class="line"><span class="comment">        # 获取分组时间</span></span><br><span class="line">        result = raw.groupby(raw[<span class="string">'时间'</span>]).size().reset_index().drop(columns=[<span class="number">0</span>])</span><br><span class="line">        result.columns = [<span class="string">'s_datemin'</span>]</span><br><span class="line"><span class="comment">        # 计算价格平均值--去掉成交量为零的行</span></span><br><span class="line">        s_price = raw.loc[raw[<span class="string">'成交量'</span>]!=<span class="number">0</span>]</span><br><span class="line">        s_price = (s_price[<span class="string">'成交额'</span>].groupby(s_price[<span class="string">'时间'</span>]).mean()/(s_price[<span class="string">'成交量'</span>]).groupby(s_price[<span class="string">'时间'</span>]).mean()).reset_index(name=<span class="string">'均成交额'</span>)</span><br><span class="line">        s_price.columns = [<span class="string">'s_datemin'</span>,<span class="string">'s_price'</span>]</span><br><span class="line"><span class="comment">        #print(s_price[:5])</span></span><br><span class="line"><span class="comment">        # 分割--B</span></span><br><span class="line">        b_result = raw.loc[raw[<span class="string">'方向'</span>]==<span class="string">'B'</span>]</span><br><span class="line">        b_result = (b_result[[<span class="string">'成交额'</span>,<span class="string">'成交量'</span>,<span class="string">'成交笔数'</span>]].groupby(b_result[<span class="string">'时间'</span>]).sum()).reset_index()</span><br><span class="line"><span class="comment">        #print(b_result[:5])</span></span><br><span class="line">        b_result.columns = [<span class="string">'s_datemin'</span>,<span class="string">'s_bvalue'</span>,<span class="string">'s_bshou'</span>,<span class="string">'s_bci'</span>]</span><br><span class="line"><span class="comment">        # 分割--S</span></span><br><span class="line">        s_result = raw.loc[raw[<span class="string">'方向'</span>]==<span class="string">'S'</span>]</span><br><span class="line">        s_result = (s_result[[<span class="string">'成交额'</span>,<span class="string">'成交量'</span>,<span class="string">'成交笔数'</span>]].groupby(s_result[<span class="string">'时间'</span>]).sum()).reset_index()</span><br><span class="line"><span class="comment">        #print(s_result[:5])</span></span><br><span class="line">        s_result.columns = [<span class="string">'s_datemin'</span>,<span class="string">'s_svalue'</span>,<span class="string">'s_sshou'</span>,<span class="string">'s_sci'</span>]</span><br><span class="line"><span class="comment">        # 分割--Z</span></span><br><span class="line">        z_result = raw.loc[~raw[<span class="string">'方向'</span>].isin([<span class="string">'B'</span>,<span class="string">'S'</span>])]</span><br><span class="line">        z_result = (z_result[[<span class="string">'成交额'</span>,<span class="string">'成交量'</span>,<span class="string">'成交笔数'</span>]].groupby(z_result[<span class="string">'时间'</span>]).sum()).reset_index()</span><br><span class="line"><span class="comment">        #print(z_result[:5])</span></span><br><span class="line">        z_result.columns = [<span class="string">'s_datemin'</span>,<span class="string">'s_zvalue'</span>,<span class="string">'s_zshou'</span>,<span class="string">'s_zci'</span>]</span><br><span class="line"><span class="comment">        #合并数据</span></span><br><span class="line">        <span class="keyword">info</span> = pd.merge(result,s_price,on=<span class="string">'s_datemin'</span>,how=<span class="string">'left'</span>)</span><br><span class="line">        <span class="keyword">info</span> = pd.merge(<span class="keyword">info</span>,b_result,on=<span class="string">'s_datemin'</span>,how=<span class="string">'left'</span>)</span><br><span class="line">        <span class="keyword">info</span> = pd.merge(<span class="keyword">info</span>,s_result,on=<span class="string">'s_datemin'</span>,how=<span class="string">'left'</span>)</span><br><span class="line">        <span class="keyword">info</span> = pd.merge(<span class="keyword">info</span>,z_result,on=<span class="string">'s_datemin'</span>,how=<span class="string">'left'</span>)</span><br><span class="line">        <span class="keyword">info</span>.fillna(<span class="number">0</span>,inplace=True)</span><br><span class="line">        <span class="keyword">info</span>.ix[<span class="keyword">info</span>[<span class="string">'s_price'</span>].isin([<span class="string">'inf'</span>]),<span class="string">'s_price'</span>]=<span class="number">0</span></span><br><span class="line">        <span class="keyword">info</span>[<span class="string">'s_price'</span>] = <span class="keyword">info</span>[<span class="string">'s_price'</span>].round(<span class="number">2</span>)</span><br><span class="line"><span class="comment">        # 创建数据库</span></span><br><span class="line"><span class="comment">        #### 检测数据库是否存在</span></span><br><span class="line"><span class="comment">        #table_name = file[:-4]</span></span><br><span class="line">        sql = <span class="string">'SELECT table_name FROM information_schema.TABLES WHERE table_name = "%s"'</span>%(table_name)</span><br><span class="line">        df = pd.read_sql_query(sql, engine)</span><br><span class="line">        <span class="keyword">if</span> df.empty:</span><br><span class="line">            sql = <span class="string">''</span><span class="string">'</span></span><br><span class="line"><span class="string">            CREATE TABLE `%s` (</span></span><br><span class="line"><span class="string">              `s_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '</span>主键自增<span class="string">',</span></span><br><span class="line"><span class="string">              `s_datemin` bigint(20) NULL COMMENT '</span>分钟 <span class="number">201901010930</span> 唯一<span class="string">',</span></span><br><span class="line"><span class="string">              `s_price` float(8,2) NULL COMMENT '</span>价格，本分钟价格平均值<span class="string">',</span></span><br><span class="line"><span class="string">              `s_bvalue` bigint(20) NULL DEFAULT '</span><span class="number">0</span><span class="string">' COMMENT '</span>本分钟买入金额，单位元<span class="string">',</span></span><br><span class="line"><span class="string">              `s_bshou` int(11) NULL DEFAULT '</span><span class="number">0</span><span class="string">' COMMENT '</span>本分买入股票数 单位股<span class="string">',</span></span><br><span class="line"><span class="string">              `s_bci` int(11) NULL DEFAULT '</span><span class="number">0</span><span class="string">' COMMENT '</span>本分钟 买入交易次数<span class="string">',</span></span><br><span class="line"><span class="string">              `s_svalue` bigint(20) NULL DEFAULT '</span><span class="number">0</span><span class="string">' COMMENT '</span>本分钟 卖场价值 单位元<span class="string">',</span></span><br><span class="line"><span class="string">              `s_sshou` int(11) NULL DEFAULT '</span><span class="number">0</span><span class="string">' COMMENT '</span>本分钟卖出 股票数<span class="string">',</span></span><br><span class="line"><span class="string">              `s_sci` int(11) NULL DEFAULT '</span><span class="number">0</span><span class="string">' COMMENT '</span>本分卖出交易次数<span class="string">',</span></span><br><span class="line"><span class="string">              `s_zvalue` bigint(20) NULL DEFAULT '</span><span class="number">0</span><span class="string">' COMMENT '</span>本分钟 中性成交金额 单位元<span class="string">',</span></span><br><span class="line"><span class="string">              `s_zshou` int(11) NULL DEFAULT '</span><span class="number">0</span><span class="string">' COMMENT '</span>本分钟中性 股数<span class="string">',</span></span><br><span class="line"><span class="string">              `s_zci` int(11) NULL DEFAULT '</span><span class="number">0</span><span class="string">' COMMENT '</span>本分钟 中性交易次数<span class="string">',</span></span><br><span class="line"><span class="string">               PRIMARY KEY (`s_id`),</span></span><br><span class="line"><span class="string">               UNIQUE KEY `s_datem` (`s_datemin`)</span></span><br><span class="line"><span class="string">            ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='</span>股票历史每分钟交易次及交易量<span class="string">' AUTO_INCREMENT=1 ;</span></span><br><span class="line"><span class="string">            '</span><span class="string">''</span>%(table_name)</span><br><span class="line">            engine.execute(sql)</span><br><span class="line"><span class="comment">        #else:</span></span><br><span class="line"><span class="comment">            #sql = 'alter table `%s` modify column `s_bvalue` bigint(20),modify column `s_svalue` bigint(20),modify column `s_zvalue` bigint(20);'%(table_name)</span></span><br><span class="line"><span class="comment">            #engine.execute(sql)</span></span><br><span class="line">        pd.io.sql.to_sql(<span class="keyword">info</span>,table_name,con=engine,if_exists=<span class="string">'append'</span>, index=False, chunksize=<span class="number">10000</span>)</span><br><span class="line"><span class="comment">        ## 删除已执行文件</span></span><br><span class="line">        os.remove(<span class="string">'%s\\%s'</span>%(files[<span class="number">0</span>][index],<span class="keyword">file</span>))</span><br></pre></td></tr></table></figure>
+
+        </div>
+        <div class="post-tool social-share" data-disabled="google,twitter,facebook,douban,qzone,linkedin" data-mode="prepend">
+
+        </div>
+        <div class="panel-footer">
+            
+            <div class="post-tags">标签：
+                
+                <a href="/tags/python/">Python</a>
+                
+            </div>
+            
+
+            
+            <p style="text-align: center">本文代表个人观点，内容仅供参考。若有不恰当之处，望不吝赐教！</p>
+            
+
+            
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-2800751316188740" data-ad-slot="" data-ad-format="auto" data-full-width-responsive="true"></ins>
+
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+
+            
+<section id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <style>
+        .markdown-body * {
+            -webkit-box-sizing: content-box;
+            box-sizing: content-box;
+        }
+    </style>
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var gitalk = new Gitalk({
+            clientID: '3371b856dd39533341dd',
+            clientSecret: 'd11de7ffd8f324d3996cdb17766f51f5212bc13f',
+            repo: 'lnew.github.io',
+            owner: 'lnew',
+            admin: ['lnew'],
+            id: 'Pandas处理csv数据入库二',      // Ensure uniqueness and length less than 50
+            distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
+        </div>
+    </div>
+</main>
+<script src="/js/busuanzi.pure.mini.js"></script>
+<script src="/js/social-share.min.js"></script>
+
+
+        <aside class="col-xs-12 col-sm-4">
+    <div class="panel panel-default lasest-update">
+        <!-- S 最近更新 -->
+        <div class="panel-heading">
+            <h3 class="panel-title">最近</h3>
+        </div>
+        <div class="panel-body">
+            <ul class="list-unstyled">
+                
+                <li>
+                    <a class="link-dark" href="/tech-notes/progress-1578290813.html" title="Php进度条">Php进度条</a>
+                </li>
+                
+                <li>
+                    <a class="link-dark" href="/tech-notes/php-ffmpeg-1575113803.html" title="Php处理视频工具ffmpeg">Php处理视频工具ffmpeg</a>
+                </li>
+                
+                <li>
+                    <a class="link-dark" href="/tech-notes/mysql-1573638650.html" title="Sql动态行列转换">Sql动态行列转换</a>
+                </li>
+                
+                <li>
+                    <a class="link-dark" href="/tech-notes/js-1566876082.html" title="Js格式化时间">Js格式化时间</a>
+                </li>
+                
+                <li>
+                    <a class="link-dark" href="/tech-notes/php-1565231211.html" title="Php解析nginx日志">Php解析nginx日志</a>
+                </li>
+                
+                <li>
+                    <a class="link-dark" href="/tech-notes/php-1564633627.html" title="CentOS7安装php扩展ssh2">CentOS7安装php扩展ssh2</a>
+                </li>
+                
+                <li>
+                    <a class="link-dark" href="/tech-notes/php-1563875831.html" title="在一组数中，找给定值Target最近的k个数">在一组数中，找给定值Target最近的k个数</a>
+                </li>
+                
+                <li>
+                    <a class="link-dark" href="/tech-notes/pandas-1563334142.html" title="Pandas处理csv数据入库二">Pandas处理csv数据入库二</a>
+                </li>
+                
+                <li>
+                    <a class="link-dark" href="/tech-notes/pandas-1562901077.html" title="初用Pandas操作记录">初用Pandas操作记录</a>
+                </li>
+                
+                <li>
+                    <a class="link-dark" href="/tech-notes/mysql-1562661148.html" title="Mysql主从同步第二篇">Mysql主从同步第二篇</a>
+                </li>
+                
+            </ul>
+        </div>
+        <!-- E 最近更新 -->
+    </div>
+
+    <div class="panel panel-blockimg">
+        
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-2800751316188740" data-ad-slot="" data-ad-format="auto" data-full-width-responsive="true"></ins>
+
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+    </div>
+
+    <!-- S 热门标签 -->
+    <div class="panel panel-default hot-tags">
+        <div class="panel-heading">
+            <h3 class="panel-title">热门标签</h3>
+        </div>
+        <div class="panel-body">
+            <div class="tags">
+                
+                <a href="/tags/excel/" class="tag"> <span>Excel(1)
+                    </span></a>
+                
+                <a href="/tags/hexo/" class="tag"> <span>Hexo(2)
+                    </span></a>
+                
+                <a href="/tags/javascript/" class="tag"> <span>JavaScript(1)
+                    </span></a>
+                
+                <a href="/tags/Javascript/" class="tag"> <span>Javascript(2)
+                    </span></a>
+                
+                <a href="/tags/linux/" class="tag"> <span>Linux(3)
+                    </span></a>
+                
+                <a href="/tags/mysql/" class="tag"> <span>Mysql(10)
+                    </span></a>
+                
+                <a href="/tags/php/" class="tag"> <span>Php(21)
+                    </span></a>
+                
+                <a href="/tags/python/" class="tag"> <span>Python(7)
+                    </span></a>
+                
+                <a href="/tags/website/" class="tag"> <span>网站(1)
+                    </span></a>
+                
+                <a href="/tags/caiji/" class="tag"> <span>采集(2)
+                    </span></a>
+                
+                <a href="/tags/music/" class="tag"> <span>音乐(2)
+                    </span></a>
+                
+            </div>
+        </div>
+    </div>
+    <!-- E 热门标签 -->
+
+    <!-- S 推荐下载 -->
+    <div class="panel panel-default recommend-article">
+        <div class="panel-heading">
+            <h3 class="panel-title">推荐工具</h3>
+        </div>
+        <div class="panel-body">
+            
+            
+            <div class="media media-number">
+                <div class="media-left">
+                    <span class="num">1</span>
+                </div>
+                <div class="media-body">
+                    <a href="https://www.jetbrains.com/zh/phpstorm/" target="_blank" title="PhpStorm 高效的php IDE，代码编辑器">PhpStorm 高效的php IDE，代码编辑器</a>
+                </div>
+            </div>
+            
+            
+            <div class="media media-number">
+                <div class="media-left">
+                    <span class="num">2</span>
+                </div>
+                <div class="media-body">
+                    <a href="https://www.dcloud.io/" target="_blank" title="Hbuilder 跨平台开发工具，一套代码多端使用，我是觉得的真的强大">Hbuilder 跨平台开发工具，一套代码多端使用，我是觉得的真的强大</a>
+                </div>
+            </div>
+            
+            
+            <div class="media media-number">
+                <div class="media-left">
+                    <span class="num">3</span>
+                </div>
+                <div class="media-body">
+                    <a href="https://www.getpostman.com/" target="_blank" title="Postman 模拟请求工具，api对接好帮手">Postman 模拟请求工具，api对接好帮手</a>
+                </div>
+            </div>
+            
+            
+            <div class="media media-number">
+                <div class="media-left">
+                    <span class="num">4</span>
+                </div>
+                <div class="media-body">
+                    <a href="http://www.formysql.com/" target="_blank" title="Navicat for MySql 数据库操作工具，轻便，易用">Navicat for MySql 数据库操作工具，轻便，易用</a>
+                </div>
+            </div>
+            
+            
+            <div class="media media-number">
+                <div class="media-left">
+                    <span class="num">5</span>
+                </div>
+                <div class="media-body">
+                    <a href="https://laravelacademy.org/" target="_blank" title="Laravel php优秀框架，文档插件齐全，快速建站必备">Laravel php优秀框架，文档插件齐全，快速建站必备</a>
+                </div>
+            </div>
+            
+            
+            <div class="media media-number">
+                <div class="media-left">
+                    <span class="num">6</span>
+                </div>
+                <div class="media-body">
+                    <a href="http://www.thinkphp.cn/" target="_blank" title="Thinkphp 另一个php优秀框架，二次开发的开源框架很多，快速建站必备">Thinkphp 另一个php优秀框架，二次开发的开源框架很多，快速建站必备</a>
+                </div>
+            </div>
+            
+            
+            <div class="media media-number">
+                <div class="media-left">
+                    <span class="num">7</span>
+                </div>
+                <div class="media-body">
+                    <a href="https://github.com/" target="_blank" title="Github 这个站就不多描述了，大家都知道~">Github 这个站就不多描述了，大家都知道~</a>
+                </div>
+            </div>
+            
+            
+            <div class="media media-number">
+                <div class="media-left">
+                    <span class="num">8</span>
+                </div>
+                <div class="media-body">
+                    <a href="https://www.aliyun.com/" target="_blank" title="阿里云 上云就上阿里云">阿里云 上云就上阿里云</a>
+                </div>
+            </div>
+            
+            
+            <div class="media media-number">
+                <div class="media-left">
+                    <span class="num">9</span>
+                </div>
+                <div class="media-body">
+                    <a href="https://reactnative.cn/" target="_blank" title="React Native 使用JavaScript和React编写原生移动应用，功能强大">React Native 使用JavaScript和React编写原生移动应用，功能强大</a>
+                </div>
+            </div>
+            
+            
+            <div class="media media-number">
+                <div class="media-left">
+                    <span class="num">10</span>
+                </div>
+                <div class="media-body">
+                    <a href="https://codecombat.163.com/" target="_blank" title="极客战记 网易的编程游戏，多种语言，感觉还是蛮有意思的">极客战记 网易的编程游戏，多种语言，感觉还是蛮有意思的</a>
+                </div>
+            </div>
+            
+            
+            <div class="media media-number">
+                <div class="media-left">
+                    <span class="num">11</span>
+                </div>
+                <div class="media-body">
+                    <a href="https://www.easywechat.com/" target="_blank" title="EasyWeChat 使用很方便的非官方微信php-sdk，授权登陆，支付快速搞定">EasyWeChat 使用很方便的非官方微信php-sdk，授权登陆，支付快速搞定</a>
+                </div>
+            </div>
+            
+            
+            <div class="media media-number">
+                <div class="media-left">
+                    <span class="num">12</span>
+                </div>
+                <div class="media-body">
+                    <a href="https://www.iconfont.cn/" target="_blank" title="Iconfont 一个很好的图标库，UI库">Iconfont 一个很好的图标库，UI库</a>
+                </div>
+            </div>
+            
+            
+            <div class="media media-number">
+                <div class="media-left">
+                    <span class="num">13</span>
+                </div>
+                <div class="media-body">
+                    <a href="https://cn.vuejs.org/" target="_blank" title="Vue 渐进式 JavaScript 框架，很火的前端框架，易用，灵活，高效">Vue 渐进式 JavaScript 框架，很火的前端框架，易用，灵活，高效</a>
+                </div>
+            </div>
+            
+            
+            <div class="media media-number">
+                <div class="media-left">
+                    <span class="num">14</span>
+                </div>
+                <div class="media-body">
+                    <a href="https://www.yiibai.com/" target="_blank" title="易百教程 涉及多种语言的代码示例，教程，看一看还是很有长进的">易百教程 涉及多种语言的代码示例，教程，看一看还是很有长进的</a>
+                </div>
+            </div>
+            
+            
+            <div class="media media-number">
+                <div class="media-left">
+                    <span class="num">15</span>
+                </div>
+                <div class="media-body">
+                    <a href="http://www.itcast.cn/" target="_blank" title="传智播客 这个大家上去看看视频还是不错的，视频都可以从百度云盘下载下来">传智播客 这个大家上去看看视频还是不错的，视频都可以从百度云盘下载下来</a>
+                </div>
+            </div>
+            
+            
+            <div class="media media-number">
+                <div class="media-left">
+                    <span class="num">16</span>
+                </div>
+                <div class="media-body">
+                    <a href="https://leancloud.cn/" target="_blank" title="LeanCloud 可以免费托管一些数据😜">LeanCloud 可以免费托管一些数据😜</a>
+                </div>
+            </div>
+            
+            
+            <div class="media media-number">
+                <div class="media-left">
+                    <span class="num">17</span>
+                </div>
+                <div class="media-body">
+                    <a href="http://doc.workerman.net/" target="_blank" title="Workerman 高性能socket服务框架，极简、稳定、高性能、分布式。">Workerman 高性能socket服务框架，极简、稳定、高性能、分布式。</a>
+                </div>
+            </div>
+            
+            
+            <div class="media media-number">
+                <div class="media-left">
+                    <span class="num">18</span>
+                </div>
+                <div class="media-body">
+                    <a href="https://tushare.pro/" target="_blank" title="Tushare 金融大数据开放社区">Tushare 金融大数据开放社区</a>
+                </div>
+            </div>
+            
+            
+            <div class="media media-number">
+                <div class="media-left">
+                    <span class="num">19</span>
+                </div>
+                <div class="media-body">
+                    <a href="https://api.i-meto.com/" target="_blank" title="萨摩工具箱 有好货！！！😍">萨摩工具箱 有好货！！！😍</a>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    <!-- E 推荐下载 -->
+</aside>
+
+    </div>
+</div>
+
+<div class="container hidden-xs j-partner">
+    <div class="panel panel-default">
+        <!-- S 友情链接 -->
+        <div class="panel-heading">
+            <h3 class="panel-title">友情链接</h3>
+        </div>
+        <div class="panel-body">
+            <div class="list-unstyled list-links">
+                
+                
+                <a href="https://music.163.com/" target="_blank" title="网易云音乐">网易云音乐</a>
+                
+                
+                <a href="https://y.qq.com/" target="_blank" title="QQ音乐">QQ音乐</a>
+                
+                
+                <a href="https://www.xiami.com/" target="_blank" title="虾米音乐">虾米音乐</a>
+                
+                
+                <a href="https://www.kugou.com/" target="_blank" title="酷狗音乐">酷狗音乐</a>
+                
+                
+                <a href="https://music.taihe.com/" target="_blank" title="百度音乐">百度音乐</a>
+                
+            </div>
+        </div>
+        <!-- E 友情链接 -->
+    </div>
+
+</div>
+
+<footer style="clear: both;text-align: center">
+    <div class="container-fluid" id="footer">
+        <div class="container">
+            <div class="row footer-inner">
+                <footer class="footer p-0">
+    <div class="footer-inner p-0">
+        <p>
+            <a href="/about/" title="关于">关于</a>&nbsp;&nbsp<em>·</em>&nbsp;&nbsp
+            <a href="/sitemap.xml" title="地图">地图</a>
+        </p>
+        <p>
+            本站已建立&nbsp<a href="/timeline" id="siteBuildingTime"></a>&nbsp天，<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="licence">采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议创作</a><br>
+            ©2018-<span id="cpYear"></span> 基于&nbsp<a href="http://hexo.io" target="_blank" rel="nofollow">Hexo</a>
+            ，主题采用&nbsp&nbsp<a href="https://demo.fastadmin.net/cms" target="_blank" rel="bookmark">fastadmin-cms</a>
+            ，作者&nbsp<a href="https://lzz1.top" target="_blank" rel="friend">lzz</a>
+            ，Hosted by <a href="https://pages.github.com/" target="_blank" rel="nofollow">GitHub Pages</a>
+        </p>
+    </div>
+</footer>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<div class="popup search-popup local-search-popup">
+    <div class="local-search-header clearfix">
+        <span class="search-icon">
+            <i class="fa fa-search"></i>
+        </span>
+        <span class="popup-btn-close">
+            <i class="fa fa-times-circle"></i>
+        </span>
+        <div class="local-search-input-wrapper">
+            <input id="local-search-input" spellcheck="false" type="text" autocomplete="off" placeholder="请输入查询关键词">
+        </div>
+    </div>
+    <div id="local-search-result"></div>
+</div>
+
+<div class="fixed-btn">
+    <a class="btn-gotop" href="javascript:"> <i class="fa fa-angle-up"></i></a>
+</div>
+
+<iframe style="position: fixed;bottom: 0;right: 0;background-color: #fff" id="musicframe" src="/music.html" frameborder="0" scrolling="no" class="col-lg-3 col-md-4 col-sm-12"></iframe>
+
+<script src="/js/SimpleCore.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        SimpleCore.init({
+            buildingTime: '02/19/2019',
+            current: $('.post-tags').length > 0 ? 'post' : 'archive',
+            snsQRCode: '/img/2019/wx_xcx.jpg',
+            donateImg: '/images/donate-qr.png',
+            localSearch: {
+                dbPath: '/search.json',
+                trigger: 'auto',
+                topN: '1',
+                unescape: 'false'
+            }
+        });
+        
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            } else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        
+    });
+</script>
+</body>
+</html>
